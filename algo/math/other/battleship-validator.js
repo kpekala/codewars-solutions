@@ -54,7 +54,6 @@ function travelShip(x, y, field, visited) {
     x += kx;
     y += ky;
   }
-  return typeMap[shipCellNumb];
 }
 
 function validateBattlefield(field) {
