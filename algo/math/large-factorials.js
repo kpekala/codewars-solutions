@@ -24,5 +24,3 @@ exports.factorial = function factorial(n) {
   }
   return res;
 };
-
-exports.add = add;

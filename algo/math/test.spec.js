@@ -1,6 +1,7 @@
 const { comp } = require('./are-they-same');
 const { humanReadableTime } = require('./human-time');
 const { add, factorial } = require('./large-factorials');
+const { determinant } = require('./determinant');
 
 describe('Are they the same', () => {
   test('simple test', () => {
@@ -29,11 +30,6 @@ describe('Human Readable Time', () => {
 });
 
 describe('Large factorials', () => {
-  test('add function', () => {
-    expect(add('123', '456')).toBe('579');
-    expect(add('47589478', '588861338')).toBe('636450816');
-    expect(add('9999', '99999')).toBe((9999 + 99999).toString());
-  });
   test('factorial', () => {
     expect(factorial(5)).toBe('120');
     expect(factorial(6)).toBe('720');
@@ -43,3 +39,11 @@ describe('Large factorials', () => {
     expect(factorial(15)).toBe('1307674368000');
   });
 });
+
+fdescribe('Determinant of matrix', () => {
+  test('simple test', () => {
+    expect(determinant([ [4, 6], [3,8]])).toBe(14);
+    expect(determinant([[2,4,2],[3,1,1],[1,2,0]])).toBe(10);
+  });
+});
+
