@@ -1,5 +1,7 @@
 const { comp } = require('./are-they-same');
 const { humanReadableTime } = require('./human-time');
+const { add, factorial } = require('./large-factorials');
+
 describe('Are they the same', () => {
   test('simple test', () => {
     a = [121, 144, 19, 161, 19, 144, 19, 11];
@@ -23,5 +25,21 @@ describe('Human Readable Time', () => {
     doTest(86399, '23:59:59');
     doTest(86400, '24:00:00');
     doTest(359999, '99:59:59');
+  });
+});
+
+describe('Large factorials', () => {
+  test('add function', () => {
+    expect(add('123', '456')).toBe('579');
+    expect(add('47589478', '588861338')).toBe('636450816');
+    expect(add('9999', '99999')).toBe((9999 + 99999).toString());
+  });
+  test('factorial', () => {
+    expect(factorial(5)).toBe('120');
+    expect(factorial(6)).toBe('720');
+    expect(factorial(10)).toBe('3628800');
+    expect(factorial(11)).toBe('39916800');
+    expect(factorial(13)).toBe('6227020800');
+    expect(factorial(15)).toBe('1307674368000');
   });
 });
