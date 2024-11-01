@@ -2,6 +2,7 @@ const { comp } = require('./are-they-same');
 const { humanReadableTime } = require('./human-time');
 const { add, factorial } = require('./large-factorials');
 const { determinant } = require('./determinant');
+const { getTokens } = require('./eval-expression');
 
 describe('Are they the same', () => {
   test('simple test', () => {
@@ -40,10 +41,16 @@ describe('Large factorials', () => {
   });
 });
 
-fdescribe('Determinant of matrix', () => {
+describe('Determinant of matrix', () => {
   test('simple test', () => {
     expect(determinant([ [4, 6], [3,8]])).toBe(14);
     expect(determinant([[2,4,2],[3,1,1],[1,2,0]])).toBe(10);
   });
 });
 
+fdescribe('Evaluation of expression', () => {
+  test('get tokens', () => {
+    expect(getTokens('2 + 3 / 4.233 + 1')).toStrictEqual([2, '+', 3, '/', 4.233, '+', 1]);
+    expect(getTokens('1-1+1*2--2')).toStrictEqual([1, '-', 1, '+', 1, '*', 2, '-', -2]);
+  });
+});
