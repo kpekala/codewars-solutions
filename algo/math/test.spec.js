@@ -2,7 +2,7 @@ const { comp } = require('./are-they-same');
 const { humanReadableTime } = require('./human-time');
 const { add, factorial } = require('./large-factorials');
 const { determinant } = require('./determinant');
-const { getTokens } = require('./eval-expression');
+const { getTokens, calc } = require('./eval-expression');
 
 describe('Are they the same', () => {
   test('simple test', () => {
@@ -49,8 +49,26 @@ describe('Determinant of matrix', () => {
 });
 
 fdescribe('Evaluation of expression', () => {
-  test('get tokens', () => {
-    expect(getTokens('2 + 3 / 4.233 + 1')).toStrictEqual([2, '+', 3, '/', 4.233, '+', 1]);
+  test('getTokens', () => {
+    expect(getTokens('2 + 3 / (4.233 + 1)')).toStrictEqual([2, '+', 3, '/', '(', 4.233, '+', 1, ')']);
     expect(getTokens('1-1+1*2--2')).toStrictEqual([1, '-', 1, '+', 1, '*', 2, '-', -2]);
+    expect(getTokens('2 /2+3 * 4.75- -6')).toStrictEqual([2, '/', 2, '+', 3, '*', 4.75, '-', -6]);
+    expect(getTokens('12*-1')).toStrictEqual([12, '*', -1]);
+    expect(getTokens('12* 123/-(-5 + 2)')).toStrictEqual([12, '*', 123, '/', '-', '(', -5, '+', 2, ')']);
+    expect(getTokens('1 - -(-(-(-4)))')).toStrictEqual([1, '-', '-', '(', '-', '(', '-', '(', -4, ')', ')', ')'])
   });
+  test('calc', () => {
+    expect(calc('2 + 3 / 4 + 1')).toBe(3.75);
+    expect(calc('2 + 3 / 4 / 2 * 3 + 1')).toBe(4.125);
+    expect(calc('2 + 3 / 4 / 2 * 3 + 1 / 2')).toBe(3.625);
+    expect(calc('(2 + 1 / 4)')).toBe(2.25);
+    expect(calc('2 * (1 + 5) / 2')).toBe(6);
+    expect(calc('2 /2+3 * 4.75- -6')).toBe(21.25);
+    expect(calc('12*-1')).toBe(-12);
+    expect(calc('12* 123/-(-5 + 2)')).toBe(492);
+    expect(calc('1 - -(-(-(-4)))')).toBe(-3);
+    expect(calc('80 -(19)')).toBe(61);
+    expect(calc('123.45*(678.90 / (-2.5+ 11.5)-(((80 -(19))) *33.25)) / 20')).toBe(-12053.760875)
+    // expect(calc('(123.45*(678.90 / (-2.5+ 11.5)-(((80 -(19))) *33.25)) / 20) - (123.45*(678.90 / (-2.5+ 11.5)-(((80 -(19))) *33.25)) / 20) + (13 - 2)/ -(-11) ')).toBe(1)
+  })
 });
