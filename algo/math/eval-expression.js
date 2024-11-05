@@ -48,8 +48,7 @@ function extractParenthesisTokens(tokens, i) {
 
 function calculateRightMultiplications(tokens, i, j) {
   let rightResult = tokens[i];
-
-  while (j < tokens.length && ['*', '/'].includes(tokens[j])) {
+  while (j < tokens.length && (['*', '/'].includes(tokens[j]))) {
     j++;
     if (typeof tokens[j] === 'number') {
       if (tokens[j - 1] === '/') rightResult /= tokens[j];
@@ -97,8 +96,13 @@ function calcTokens(tokens) {
     } else if (tokens[i] === '('){
       // parenthesis
       const pTokens = extractParenthesisTokens(tokens, i);
-      result = applySign(result, calcTokens(pTokens), lastSign);
-      i += pTokens.length;
+      i += pTokens.length + 1;
+      tokens[i] = calcTokens(pTokens);
+      let [rightResult, j] = calculateRightMultiplications(tokens, i, i + 1);
+      result = applySign(result, rightResult, lastSign);
+      if (j >= i + 2) {
+        i = j - 1;
+      }
     }
     i++;
   }
