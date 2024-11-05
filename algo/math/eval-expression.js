@@ -46,31 +46,45 @@ function extractParenthesisTokens(tokens, i) {
   }
 }
 
+function calculateRightMultiplications(tokens, i, j) {
+  let rightResult = tokens[i];
+
+  while (j < tokens.length && ['*', '/'].includes(tokens[j])) {
+    j++;
+    if (typeof tokens[j] === 'number') {
+      if (tokens[j - 1] === '/') rightResult /= tokens[j];
+      else if (tokens[j - 1] === '*') rightResult *= tokens[j];
+    } 
+    else if (tokens[j] === '(' || (tokens[j] === '-' && tokens[j+1] === '(')) {
+      let minus = tokens[j] === '-';
+      const pTokens = extractParenthesisTokens(tokens, j);
+      if (tokens[j - 1] === '/') rightResult /= minus ? -calcTokens(pTokens): calcTokens(pTokens);
+      else if (tokens[j - 1] === '*') rightResult *= minus ? -calcTokens(pTokens): calcTokens(pTokens);
+      j += pTokens.length + 1;
+      if(minus) j++;
+    }
+    j++;
+  }
+  return [rightResult, j];
+}
+
+function applySign(a, b, sign) {
+  switch (sign) {
+    case '+' : return a + b;
+    case '-' : return a - b;
+    case '*' : return a * b;
+    case '/' : return a / b;
+  }
+}
+
 function calcTokens(tokens) {
   let result = 0;
   let lastSign = '+';
   let i = 0;
   while (i < tokens.length) {
     if (typeof tokens[i] === 'number') {
-      let j = i + 1;
-      let rightResult = tokens[i];
-      while (j < tokens.length && ['*', '/'].includes(tokens[j])) {
-        j++;
-        if (typeof tokens[j] === 'number') {
-          if (tokens[j - 1] === '/') rightResult /= tokens[j]
-          else if (tokens[j - 1] === '*') rightResult *= tokens[j]
-        } else if (tokens[j] === '(' || (tokens[j] === '-' && tokens[j+1] === '(')) {
-          let minus = tokens[j] === '-';
-          const pTokens = extractParenthesisTokens(tokens, j);
-          if (tokens[j - 1] === '/') rightResult /= minus ? -calcTokens(pTokens): calcTokens(pTokens);
-          else if (tokens[j - 1] === '*') rightResult *= minus ? -calcTokens(pTokens): calcTokens(pTokens);
-          j += pTokens.length + 1;
-          if(minus) j++;
-        }
-        j++;
-      }
-      if (lastSign === '+') result += rightResult;
-      else if (lastSign === '-') result -= rightResult;
+      let [rightResult, j] = calculateRightMultiplications(tokens, i, i + 1);
+      result = applySign(result, rightResult, lastSign);
       if (j >= i + 2) {
         i = j - 1;
       }
@@ -83,12 +97,8 @@ function calcTokens(tokens) {
     } else if (tokens[i] === '('){
       // parenthesis
       const pTokens = extractParenthesisTokens(tokens, i);
-      if (lastSign === '+') {
-        result += calcTokens(pTokens);
-      } else if (lastSign === '-') {
-        result -= calcTokens(pTokens);
-      } 
-      i += pTokens.length + 1;
+      result = applySign(result, calcTokens(pTokens), lastSign);
+      i += pTokens.length;
     }
     i++;
   }
@@ -97,7 +107,6 @@ function calcTokens(tokens) {
 
 
 exports.calc = function (expression) {
-  console.log(getTokens(expression))
  return calcTokens(getTokens(expression));
 };
 
